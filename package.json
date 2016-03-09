@@ -1,23 +1,23 @@
 {
-  "name": "react-native-yyamap",
+  "name": "react-native-baidumap",
   "version": "0.0.1",
-  "description": "amap(gaode map) sdk for react-native",
+  "description": "baidumap sdk for react-native",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yiyangest/react-native-yyamap.git%22.git"
+    "url": "git+https://github.com/yiyangest/react-native-baidumap.git%22.git"
   },
   "keywords": [
-    "amap",
+    "baidumap",
     "react-native"
   ],
   "author": "yiyangest",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yiyangest/react-native-yyamap.git%22/issues"
+    "url": "https://github.com/yiyangest/react-native-baidumap.git%22/issues"
   },
-  "homepage": "https://github.com/yiyangest/react-native-yyamap.git%22#readme"
+  "homepage": "https://github.com/yiyangest/react-native-baidumap.git%22#readme"
 }
