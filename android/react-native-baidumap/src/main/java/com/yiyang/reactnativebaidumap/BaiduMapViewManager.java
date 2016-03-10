@@ -136,7 +136,9 @@ public class BaiduMapViewManager extends SimpleViewManager<MapView> {
         for(int i = 0; i < size; i++) {
             ReadableMap overlay = value.getMap(i);
             ReactMapOverlay polyline = new ReactMapOverlay(overlay);
-            overlays.add(polyline);
+            if (polyline.getOptions() != null && polyline.getOptions().getPoints() != null && polyline.getOptions().getPoints().size() > 1) {
+                overlays.add(polyline);
+            }
         }
 
         getMapView().setOverlays(overlays);

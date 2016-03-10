@@ -58,7 +58,7 @@ public class ReactMapOverlay {
     public PolylineOptions getOptions() {return this.mOptions;}
 
     public void addToMap(BaiduMap map) {
-        if (this.mPolyline == null) {
+        if (this.mPolyline == null && this.mOptions != null && this.mOptions.getPoints() != null &&this.mOptions.getPoints().size() > 1) {
             this.mPolyline = (Polyline)map.addOverlay(this.mOptions);
         }
     }
