@@ -1,6 +1,6 @@
 {
   "name": "react-native-baidumap",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "baidumap sdk for react-native",
   "main": "index.js",
   "scripts": {
