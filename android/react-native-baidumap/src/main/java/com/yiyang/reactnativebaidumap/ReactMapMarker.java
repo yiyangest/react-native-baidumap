@@ -28,7 +28,6 @@ import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.facebook.react.bridge.ReadableMap;
-import com.yiyang.reactnativeamap.R;
 
 /**
  * Created by yiyang on 16/3/1.
