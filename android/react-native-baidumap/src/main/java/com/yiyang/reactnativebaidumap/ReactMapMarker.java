@@ -101,6 +101,9 @@ public class ReactMapMarker {
             options.title(annotation.getString("title"));
         }
 
+        options.icon(defaultIcon);
+        this.mOptions = options;
+
         if (annotation.hasKey("image")) {
             String imgUri = annotation.getMap("image").getString("uri");
             if (imgUri != null && imgUri.length() > 0) {
@@ -114,16 +117,14 @@ public class ReactMapMarker {
                             .setOldController(mLogoHolder.getController())
                             .build();
                     mLogoHolder.setController(controller);
-                    options.icon(defaultIcon);
                 } else {
-                    options.icon(BitmapDescriptorFactory.fromPath(imgUri));
+                    this.mOptions.icon(BitmapDescriptorFactory.fromPath(imgUri));
                 }
             }
         } else {
             options.icon(defaultIcon);
         }
 
-        this.mOptions = options;
 
     }
 
@@ -155,7 +156,7 @@ public class ReactMapMarker {
     public void update() {
         if (this.mMarker != null) {
             this.mMarker.setIcon(getIcon());
-        } else {
+        } else if (this.mOptions != null){
             this.mOptions.icon(getIcon());
         }
     }
