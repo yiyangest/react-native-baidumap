@@ -48,6 +48,7 @@ public class BaiduMapViewManager extends SimpleViewManager<MapView> {
             @Override
             public void onMapLoaded() {
                 BaiduMapViewManager.this.isMapLoaded = true;
+                mMapView.onMapLoaded();
             }
         });
         this.mContext = themedReactContext;
@@ -120,7 +121,7 @@ public class BaiduMapViewManager extends SimpleViewManager<MapView> {
                 builder.include(location);
             }
 
-            getMapView().getMap().setMapStatusLimits(builder.build());
+            getMapView().getMap().animateMapStatus(MapStatusUpdateFactory.newLatLngBounds(builder.build()));
         }
 
     }

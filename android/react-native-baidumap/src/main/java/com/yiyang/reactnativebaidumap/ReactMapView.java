@@ -1,7 +1,10 @@
 package com.yiyang.reactnativebaidumap;
 
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.model.LatLngBounds;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,5 +130,20 @@ public class ReactMapView {
         }
 
         this.mMarkerIds = newMarkerIds;
+    }
+
+
+    public void onMapLoaded() {
+        if (mMarkers != null && mMarkers.size() > 0) {
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            for (ReactMapMarker marker :
+                    mMarkers) {
+                if (marker != null && marker.getOptions() != null) {
+                    LatLng location = marker.getOptions().getPosition();
+                    builder.include(location);
+                }
+            }
+            this.getMap().animateMapStatus(MapStatusUpdateFactory.newLatLngBounds(builder.build()));
+        }
     }
 }
