@@ -118,7 +118,7 @@ public class ReactMapMarker {
                             .build();
                     mLogoHolder.setController(controller);
                 } else {
-                    this.mOptions.icon(BitmapDescriptorFactory.fromPath(imgUri));
+                    this.mOptions.icon(getBitmapDescriptorByName(imgUri));
                 }
             }
         } else {
@@ -143,6 +143,14 @@ public class ReactMapMarker {
         if (this.mMarker == null) {
             this.mMarker = (Marker)map.addOverlay(this.getOptions());
         }
+    }
+
+    private int getDrawableResourceByName(String name) {
+        return this.mContext.getResources().getIdentifier(name, "drawable", this.mContext.getPackageName());
+    }
+
+    private BitmapDescriptor getBitmapDescriptorByName(String name) {
+        return BitmapDescriptorFactory.fromResource(getDrawableResourceByName(name));
     }
 
     private BitmapDescriptor getIcon() {
