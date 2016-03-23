@@ -14,6 +14,8 @@
 #import "RCTBaiduMapOverlay.h"
 #import "RCTUtils.h"
 
+#import <BaiduMapAPI_Utils/BMKGeometry.h>
+
 const CLLocationDegrees RCTBaiduMapDefaultSpan = 0.005;
 const NSTimeInterval RCTBaiduMapRegionChangeObserveInterval = 0.1;
 const CGFloat RCTBaiduMapZoomBoundBuffer = 0.01;
@@ -151,6 +153,7 @@ const CGFloat RCTBaiduMapZoomBoundBuffer = 0.01;
     
     self.annotationIDs = newAnnotationIDs;
     [self showAnnotations: self.annotations animated:YES];
+    
 }
 
 - (void)setOverlays:(NSArray<RCTBaiduMapOverlay *> *)overlays
@@ -189,6 +192,20 @@ const CGFloat RCTBaiduMapZoomBoundBuffer = 0.01;
     }
     
     self.overlayIDs = newOverlayIDs;
+    BMKCoordinateRegion region;
+    for (RCTBaiduMapOverlay *overlay in self.overlays) {
+        NSUInteger count = overlay.pointCount;
+        NSUInteger middle = count / 2;
+        if (middle < count) {
+            
+            BMKMapPoint pt = overlay.points[middle];
+            region = BMKCoordinateRegionMakeWithDistance(BMKCoordinateForMapPoint(pt), 20000, 20000);
+        }
+        
+    }
+    
+    //    [self setVisibleMapRect:re animated:YES];
+    [self setRegion:region animated:YES];
 }
 
 
