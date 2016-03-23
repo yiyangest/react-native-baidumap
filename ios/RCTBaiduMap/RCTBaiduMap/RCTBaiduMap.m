@@ -132,7 +132,7 @@ const CGFloat RCTBaiduMapZoomBoundBuffer = 0.01;
         }
     }
     for (RCTBaiduMapAnnotation *annotation in self.annotations) {
-        if (![annotations isKindOfClass:[RCTBaiduMapAnnotation class]]) {
+        if (![annotation isKindOfClass:[RCTBaiduMapAnnotation class]]) {
             continue;
         }
         
@@ -150,6 +150,7 @@ const CGFloat RCTBaiduMapZoomBoundBuffer = 0.01;
     }
     
     self.annotationIDs = newAnnotationIDs;
+    [self showAnnotations: self.annotations animated:YES];
 }
 
 - (void)setOverlays:(NSArray<RCTBaiduMapOverlay *> *)overlays
