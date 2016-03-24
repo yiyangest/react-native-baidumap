@@ -24,6 +24,7 @@ RCT_EXTERN const CGFloat RCTBaiduMapZoomBoundBuffer;
 
 @property (nonatomic, assign) BOOL followUserLocation;
 @property (nonatomic, assign) BOOL hasStartedRendering;
+@property (nonatomic, assign) BOOL autoZoomToSpan;
 @property (nonatomic, assign) CGFloat minDelta;
 @property (nonatomic, assign) CGFloat maxDelta;
 @property (nonatomic, assign) UIEdgeInsets legalLabelInsets;
@@ -39,5 +40,8 @@ RCT_EXTERN const CGFloat RCTBaiduMapZoomBoundBuffer;
 
 - (void)setAnnotations:(NSArray<RCTBaiduMapAnnotation *> *)annotations;
 - (void)setOverlays:(NSArray<RCTBaiduMapOverlay *> *)overlays;
+
+- (void)zoomToSpan;
+- (void)zoomToSpan:(NSArray<RCTBaiduMapAnnotation *> *)annotations andOverlays:(NSArray<RCTBaiduMapOverlay *> *)overlays;
 
 @end

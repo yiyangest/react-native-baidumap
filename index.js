@@ -56,6 +56,8 @@ const BaiduMapView= React.createClass({
      */
     showsUserLocation: React.PropTypes.bool,
 
+    autoZoomToSpan: React.PropTypes.bool,
+
     /**
      * If `true` the map will follow the user's location whenever it changes.
      * Note that this has no effect unless `showsUserLocation` is enabled.

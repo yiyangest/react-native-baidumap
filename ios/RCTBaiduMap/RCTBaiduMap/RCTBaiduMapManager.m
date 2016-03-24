@@ -80,6 +80,7 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_VIEW_PROPERTY(showsUserLocation, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(showsPointsOfInterest, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(followUserLocation, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(autoZoomToSpan, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(zoomEnabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(rotateEnabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(pitchEnabled, BOOL)
@@ -275,6 +276,9 @@ RCT_CUSTOM_VIEW_PROPERTY(region, BMKCoordinateRegion, RCTBaiduMap)
 - (void)mapViewDidFinishLoading:(RCTBaiduMap *)mapView
 {
     mapView.hasStartedRendering = YES;
+    if (mapView.autoZoomToSpan) {
+        [mapView zoomToSpan];
+    }
     [self _emitRegionChangeEvent:mapView continuous:NO];
 }
 

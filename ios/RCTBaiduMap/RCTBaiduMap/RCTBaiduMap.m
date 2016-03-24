@@ -154,6 +154,9 @@ const CGFloat RCTBaiduMapZoomBoundBuffer = 0.01;
     self.annotationIDs = newAnnotationIDs;
     [self showAnnotations: self.annotations animated:YES];
     
+    if (self.autoZoomToSpan) {
+        [self zoomToSpan];
+    }
 }
 
 - (void)setOverlays:(NSArray<RCTBaiduMapOverlay *> *)overlays
@@ -192,20 +195,71 @@ const CGFloat RCTBaiduMapZoomBoundBuffer = 0.01;
     }
     
     self.overlayIDs = newOverlayIDs;
-    BMKCoordinateRegion region;
-    for (RCTBaiduMapOverlay *overlay in self.overlays) {
-        NSUInteger count = overlay.pointCount;
-        NSUInteger middle = count / 2;
-        if (middle < count) {
-            
-            BMKMapPoint pt = overlay.points[middle];
-            region = BMKCoordinateRegionMakeWithDistance(BMKCoordinateForMapPoint(pt), 20000, 20000);
+    
+    if (self.autoZoomToSpan) {
+        [self zoomToSpan];
+    }
+}
+
+- (void)zoomToSpan:(NSArray<RCTBaiduMapAnnotation *> *)annotations andOverlays:(NSArray<RCTBaiduMapOverlay *> *)overlays
+{
+    CLLocationDegrees minLat = 0.0;
+    CLLocationDegrees maxLat = 0.0;
+    CLLocationDegrees minLon = 0.0;
+    CLLocationDegrees maxLon = 0.0;
+    BOOL hasInitialized = NO;
+    NSInteger index = 0;
+    if (annotations != nil) {
+        for (RCTBaiduMapAnnotation *annotation in annotations) {
+            if (index == 0 && hasInitialized == NO) {
+                minLat = maxLat = annotation.coordinate.latitude;
+                minLon = maxLon = annotation.coordinate.longitude;
+                hasInitialized = YES;
+            } else {
+                minLat = MIN(minLat, annotation.coordinate.latitude);
+                minLon = MIN(minLon, annotation.coordinate.longitude);
+                maxLat = MAX(maxLat, annotation.coordinate.latitude);
+                maxLon = MAX(maxLon, annotation.coordinate.longitude);
+            }
+            index ++;
         }
-        
+    }
+    index = 0;
+    if (overlays != nil) {
+        for (RCTBaiduMapOverlay *overlay in overlays) {
+            for (NSInteger i = 0; i < overlay.pointCount; i++) {
+                BMKMapPoint pt = overlay.points[i];
+                CLLocationCoordinate2D coordinate = BMKCoordinateForMapPoint(pt);
+                if (index == 0 && i == 0 && hasInitialized == NO) {
+                    minLat = maxLat = coordinate.latitude;
+                    minLon = maxLon = coordinate.longitude;
+                    hasInitialized = YES;
+                } else {
+                    minLat = MIN(minLat, coordinate.latitude);
+                    minLon = MIN(minLon, coordinate.longitude);
+                    maxLat = MAX(maxLat, coordinate.latitude);
+                    maxLon = MAX(maxLon, coordinate.longitude);
+                }
+            }
+            index ++;
+        }
     }
     
-    //    [self setVisibleMapRect:re animated:YES];
-    [self setRegion:region animated:YES];
+    if (hasInitialized) {
+        CLLocationCoordinate2D center;
+        center.latitude = (maxLat + minLat) * .5f;
+        center.longitude = (minLon + maxLon) * .5f;
+        BMKCoordinateSpan span = BMKCoordinateSpanMake(maxLat - minLat + 0.02, maxLon - minLon + 0.02);
+        
+        BMKCoordinateRegion region = BMKCoordinateRegionMake(center, span);
+        
+        [self setRegion:region animated:YES];
+    }
+}
+
+- (void)zoomToSpan
+{
+    [self zoomToSpan:self.annotations andOverlays:self.overlays];
 }
 
 

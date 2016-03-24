@@ -11,7 +11,6 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.model.LatLngBounds;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.uimanager.SimpleViewManager;
@@ -91,6 +90,11 @@ public class BaiduMapViewManager extends SimpleViewManager<MapView> {
         mapView.getMap().getUiSettings().setScrollGesturesEnabled(enable);
     }
 
+    @ReactProp(name="autoZoomToSpan", defaultBoolean = false)
+    public void setAutoZoomToSpan(MapView mapView, Boolean enable) {
+        this.getMapView().setAutoZoomToSpan(enable);
+    }
+
     @ReactProp(name = "mapType", defaultInt = BaiduMap.MAP_TYPE_NORMAL)
     public void setMapType(MapView mapView, int mapType) {
         mapView.getMap().setMapType(mapType);
@@ -113,15 +117,9 @@ public class BaiduMapViewManager extends SimpleViewManager<MapView> {
         }
 
         getMapView().setMarker(markers);
-        if (this.isMapLoaded) {
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            size = markers.size();
-            for (int j = 0; j < size; j++) {
-                LatLng location = markers.get(j).getOptions().getPosition();
-                builder.include(location);
-            }
 
-            getMapView().getMap().animateMapStatus(MapStatusUpdateFactory.newLatLngBounds(builder.build()));
+        if (this.isMapLoaded && this.mMapView.isAutoZoomToSpan()) {
+            this.mMapView.zoomToSpan();
         }
 
     }
@@ -143,6 +141,11 @@ public class BaiduMapViewManager extends SimpleViewManager<MapView> {
         }
 
         getMapView().setOverlays(overlays);
+
+
+        if (this.isMapLoaded && this.mMapView.isAutoZoomToSpan()) {
+            this.mMapView.zoomToSpan();
+        }
     }
 
     @ReactProp(name = "region")

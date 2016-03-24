@@ -16,6 +16,16 @@ public class ReactMapView {
 
     private MapView mMapView;
 
+    private boolean autoZoomToSpan;
+
+    public boolean isAutoZoomToSpan() {
+        return autoZoomToSpan;
+    }
+
+    public void setAutoZoomToSpan(boolean autoZoomToSpan) {
+        this.autoZoomToSpan = autoZoomToSpan;
+    }
+
     private List<ReactMapMarker> mMarkers = new ArrayList<ReactMapMarker>();
     private List<String> mMarkerIds = new ArrayList<String>();
 
@@ -134,16 +144,42 @@ public class ReactMapView {
 
 
     public void onMapLoaded() {
-        if (mMarkers != null && mMarkers.size() > 0) {
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for (ReactMapMarker marker :
-                    mMarkers) {
+        if (this.autoZoomToSpan) {
+            this.zoomToSpan();
+        }
+    }
+
+    public void zoomToSpan(List<ReactMapMarker> markers, List<ReactMapOverlay> overlays) {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        boolean hasBuilded = false;
+        if (markers != null && markers.size() > 0) {
+            for (ReactMapMarker marker:
+                 markers) {
                 if (marker != null && marker.getOptions() != null) {
                     LatLng location = marker.getOptions().getPosition();
                     builder.include(location);
+                    hasBuilded = true;
                 }
             }
+        }
+        if (overlays != null && overlays.size() > 0) {
+            for (ReactMapOverlay overlay :
+                    overlays) {
+                if (overlay != null && overlay.getOptions() != null) {
+                    for (LatLng location :
+                            overlay.getOptions().getPoints()) {
+                        builder.include(location);
+                        hasBuilded = true;
+                    }
+                }
+            }
+        }
+        if (hasBuilded) {
             this.getMap().animateMapStatus(MapStatusUpdateFactory.newLatLngBounds(builder.build()));
         }
+    }
+
+    public void zoomToSpan() {
+        this.zoomToSpan(this.mMarkers, this.mOverlays);
     }
 }
