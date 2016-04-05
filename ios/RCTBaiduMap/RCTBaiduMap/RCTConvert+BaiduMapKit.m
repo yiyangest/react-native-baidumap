@@ -11,7 +11,7 @@
 #import "RCTBaiduMapAnnotation.h"
 #import "RCTBaiduMapOverlay.h"
 
-@implementation RCTConvert (AMapKit)
+@implementation RCTConvert (BaiduMapKit)
 
 + (BMKCoordinateSpan)BMKCoordinateSpan:(id)json
 {
@@ -82,5 +82,20 @@ RCT_ARRAY_CONVERTER(RCTBaiduMapAnnotation)
 }
 
 RCT_ARRAY_CONVERTER(RCTBaiduMapOverlay)
+
++ (BMKLocationViewDisplayParam *)RCTBaiduMapLocationViewDisplayParam:(id)json
+{
+    json = [self NSDictionary:json];
+    BMKLocationViewDisplayParam *param = [BMKLocationViewDisplayParam new];
+    param.locationViewOffsetX = [self float:json[@"offsetX"]];
+    param.locationViewOffsetY = [self float:json[@"offsetY"]];
+    param.isAccuracyCircleShow = [self BOOL:json[@"showAccuracyCircle"]];
+    param.accuracyCircleFillColor = [self UIColor:json[@"accuracyCircleFillColor"]];
+    param.accuracyCircleStrokeColor = [self UIColor:json[@"accuracyCircleStrokeColor"]];
+    param.isRotateAngleValid = [self BOOL:json[@"rotateAngleValid"]];
+    param.locationViewImgName = [self NSString:json[@"image"]];
+    
+    return param;
+}
 
 @end

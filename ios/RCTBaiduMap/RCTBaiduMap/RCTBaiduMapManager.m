@@ -100,6 +100,12 @@ RCT_CUSTOM_VIEW_PROPERTY(region, BMKCoordinateRegion, RCTBaiduMap)
 {
     [view setRegion:json ? [RCTConvert BMKCoordinateRegion:json] : defaultView.region animated:YES];
 }
+RCT_CUSTOM_VIEW_PROPERTY(userLocationViewParams, BMKLocationViewDisplayParam, RCTBaiduMap)
+{
+    if (json) {
+        [view setUserLocationViewParams:[RCTConvert RCTBaiduMapLocationViewDisplayParam:json]];
+    }
+}
 
 - (NSDictionary<NSString *, id> *)constantsToExport
 {

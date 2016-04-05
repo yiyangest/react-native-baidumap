@@ -15,15 +15,22 @@
 #import "RCTUtils.h"
 
 #import <BaiduMapAPI_Utils/BMKGeometry.h>
+#import <BaiduMapAPI_Location/BMKLocationService.h>
 
 const CLLocationDegrees RCTBaiduMapDefaultSpan = 0.005;
 const NSTimeInterval RCTBaiduMapRegionChangeObserveInterval = 0.1;
 const CGFloat RCTBaiduMapZoomBoundBuffer = 0.01;
 
+@interface RCTBaiduMap ()<BMKLocationServiceDelegate>
+
+@end
+
 @implementation RCTBaiduMap
 {
     UIView *_legalLabel;
     CLLocationManager *_locationManager;
+    BMKLocationService *_locationService;
+    BMKLocationViewDisplayParam *_myLocationViewParam;
     NSMutableArray<UIView *> *_reactSubviews;
 }
 
@@ -90,13 +97,37 @@ const CGFloat RCTBaiduMapZoomBoundBuffer = 0.01;
 - (void)setShowsUserLocation:(BOOL)showsUserLocation
 {
     if (self.showsUserLocation != showsUserLocation) {
-        if (showsUserLocation && !_locationManager) {
-            _locationManager = [CLLocationManager new];
-            if ([_locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-                [_locationManager requestWhenInUseAuthorization];
-            }
+        if (showsUserLocation && !_locationService) {
+            _myLocationViewParam = [BMKLocationViewDisplayParam new];
+            _locationService = [BMKLocationService new];
+            _locationService.delegate = self;
+            [_locationService startUserLocationService];
+        } else if (showsUserLocation) {
+            [_locationService startUserLocationService];
+        }else if (!showsUserLocation && _locationService) {
+            [_locationService stopUserLocationService];
         }
         super.showsUserLocation = showsUserLocation;
+    }
+}
+
+- (void)setFollowUserLocation:(BOOL)followUserLocation
+{
+    if (self.followUserLocation != followUserLocation) {
+        if (followUserLocation) {
+            self.userTrackingMode = BMKUserTrackingModeFollow;
+        } else {
+            self.userTrackingMode = BMKUserTrackingModeNone;
+        }
+        _followUserLocation = followUserLocation;
+    }
+}
+
+- (void)setUserLocationViewParams:(BMKLocationViewDisplayParam *)userLocationViewParams
+{
+    if (self.userLocationViewParams != userLocationViewParams) {
+        [self updateLocationViewWithParam:userLocationViewParams];
+        _userLocationViewParams = userLocationViewParams;
     }
 }
 
@@ -260,6 +291,22 @@ const CGFloat RCTBaiduMapZoomBoundBuffer = 0.01;
 - (void)zoomToSpan
 {
     [self zoomToSpan:self.annotations andOverlays:self.overlays];
+}
+
+#pragma mark - BMKLocationServiceDelegate
+
+- (void)didUpdateBMKUserLocation:(BMKUserLocation *)userLocation
+{
+    if (self.showsUserLocation) {
+        [self updateLocationData:userLocation];
+    }
+}
+
+- (void)didUpdateUserHeading:(BMKUserLocation *)userLocation
+{
+    if (self.showsUserLocation) {
+        [self updateLocationData:userLocation];
+    }
 }
 
 

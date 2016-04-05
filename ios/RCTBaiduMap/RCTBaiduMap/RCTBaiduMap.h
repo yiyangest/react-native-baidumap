@@ -25,6 +25,7 @@ RCT_EXTERN const CGFloat RCTBaiduMapZoomBoundBuffer;
 @property (nonatomic, assign) BOOL followUserLocation;
 @property (nonatomic, assign) BOOL hasStartedRendering;
 @property (nonatomic, assign) BOOL autoZoomToSpan;
+@property (nonatomic, strong) BMKLocationViewDisplayParam *userLocationViewParams;
 @property (nonatomic, assign) CGFloat minDelta;
 @property (nonatomic, assign) CGFloat maxDelta;
 @property (nonatomic, assign) UIEdgeInsets legalLabelInsets;

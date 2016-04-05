@@ -25,4 +25,6 @@
 + (NSArray<RCTBaiduMapAnnotation *> *)RCTBaiduMapAnnotationArray:(id)json;
 + (NSArray<RCTBaiduMapOverlay *> *)RCTBaiduMapOverlayArray:(id)json;
 
++ (BMKLocationViewDisplayParam *)RCTBaiduMapLocationViewDisplayParam:(id)json;
+
 @end

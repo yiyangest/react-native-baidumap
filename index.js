@@ -56,6 +56,35 @@ const BaiduMapView= React.createClass({
      */
     showsUserLocation: React.PropTypes.bool,
 
+    userLocationViewParams: React.PropTypes.shape({
+        /**
+         * 定位图标XY轴偏移量(屏幕坐标)
+         */
+        offsetX: React.PropTypes.number,
+        offsetY: React.PropTypes.number,
+        /**
+         * 精度圈是否显示
+         */
+        showAccuracyCircle: React.PropTypes.bool,
+        /**
+         * 精度圈 填充颜色
+         */
+        accuracyCircleFillColor: ColorPropType,
+        /**
+         * 精度圈 边框颜色
+         */
+        accuracyCircleStrokeColor: ColorPropType,
+        /**
+         * 跟随态旋转角度是否生效
+         */
+        rotateAngleValid: React.PropTypes.bool,
+        /**
+         * 定位图标名称，需要将该图片放到 mapapi.bundle/images 目录下
+         */
+        image: React.PropTypes.string
+
+    }),
+
     autoZoomToSpan: React.PropTypes.bool,
 
     /**
