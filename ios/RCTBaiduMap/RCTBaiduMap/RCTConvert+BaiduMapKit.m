@@ -6,6 +6,8 @@
 //  Copyright © 2016年 creditease. All rights reserved.
 //
 
+#import "RCTImageSource.h"
+
 #import "RCTConvert+BaiduMapKit.h"
 #import "RCTConvert+CoreLocation.h"
 #import "RCTBaiduMapAnnotation.h"
@@ -93,7 +95,15 @@ RCT_ARRAY_CONVERTER(RCTBaiduMapOverlay)
     param.accuracyCircleFillColor = [self UIColor:json[@"accuracyCircleFillColor"]];
     param.accuracyCircleStrokeColor = [self UIColor:json[@"accuracyCircleStrokeColor"]];
     param.isRotateAngleValid = [self BOOL:json[@"rotateAngleValid"]];
-    param.locationViewImgName = [self NSString:json[@"image"]];
+//    param.locationViewImgName = [self NSString:json[@"image"]];
+    RCTImageSource *imageSource = [self RCTImageSource:json[@"image"]];
+    if (imageSource != nil) {
+        NSString *imgName = imageSource.imageURL.lastPathComponent;
+        if (imgName != nil) {
+            imgName = [imgName stringByDeletingPathExtension];
+            param.locationViewImgName = imgName;
+        }
+    }
     
     return param;
 }

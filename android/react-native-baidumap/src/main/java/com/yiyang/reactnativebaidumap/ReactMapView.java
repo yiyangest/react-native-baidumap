@@ -1,8 +1,14 @@
 package com.yiyang.reactnativebaidumap;
 
+import android.util.Log;
+
+import com.baidu.location.BDLocation;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
 
@@ -15,6 +21,10 @@ import java.util.List;
 public class ReactMapView {
 
     private MapView mMapView;
+
+    private LocationClient mLocationClient;
+
+    private ReactMapMyLocationConfiguration mConfiguration;
 
     private boolean autoZoomToSpan;
 
@@ -181,5 +191,76 @@ public class ReactMapView {
 
     public void zoomToSpan() {
         this.zoomToSpan(this.mMarkers, this.mOverlays);
+    }
+
+    public void setShowsUserLocation(boolean showsUserLocation) {
+        if (getMap() == null) {
+            return;
+        }
+        if (showsUserLocation != getMap().isMyLocationEnabled()) {
+            getMap().setMyLocationEnabled(showsUserLocation);
+            if (showsUserLocation && mLocationClient == null) {
+                mLocationClient = new LocationClient(mMapView.getContext());
+                BaiduLocationListener listener = new BaiduLocationListener(mLocationClient, new BaiduLocationListener.ReactLocationCallback() {
+                    @Override
+                    public void onSuccess(BDLocation bdLocation) {
+
+                        float radius = 0;
+                        if (mConfiguration != null && mConfiguration.isShowAccuracyCircle()) {
+                            radius = bdLocation.getRadius();
+                        }
+                        MyLocationData locData = new MyLocationData.Builder()
+                                .accuracy(radius)
+                                .latitude(bdLocation.getLatitude())
+                                .longitude(bdLocation.getLongitude())
+                                .build();
+                        if (getMap().isMyLocationEnabled()) {
+
+                            getMap().setMyLocationData(locData);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(BDLocation bdLocation) {
+                        Log.e("RNBaidumap", "error: " + bdLocation.getLocType());
+                    }
+                });
+                mLocationClient.setLocOption(getLocationOption());
+                mLocationClient.registerLocationListener(listener);
+                mLocationClient.start();
+            } else if (showsUserLocation) {
+                if (mLocationClient.isStarted()) {
+                    mLocationClient.requestLocation();
+                } else {
+                    mLocationClient.start();
+                }
+            } else if (mLocationClient != null) {
+                if (mLocationClient.isStarted()) {
+                    mLocationClient.stop();
+                }
+            }
+        }
+    }
+
+    public void setConfiguration(ReactMapMyLocationConfiguration configuration) {
+        this.mConfiguration = configuration;
+        this.mConfiguration.setConfigurationUpdateListener(new ReactMapMyLocationConfiguration.ConfigurationUpdateListener() {
+            @Override
+            public void onConfigurationUpdate(ReactMapMyLocationConfiguration aConfiguration) {
+                if (getMap() != null) {
+                    getMap().setMyLocationConfigeration(aConfiguration.getConfiguration());
+                }
+            }
+        });
+        if (getMap() != null) {
+            getMap().setMyLocationConfigeration(configuration.getConfiguration());
+        }
+    }
+
+    private LocationClientOption getLocationOption() {
+        LocationClientOption option = new LocationClientOption();
+        option.setScanSpan(1000);
+        option.setCoorType("bd09ll");
+        return option;
     }
 }

@@ -98,8 +98,8 @@ const CGFloat RCTBaiduMapZoomBoundBuffer = 0.01;
 {
     if (self.showsUserLocation != showsUserLocation) {
         if (showsUserLocation && !_locationService) {
-            _myLocationViewParam = [BMKLocationViewDisplayParam new];
             _locationService = [BMKLocationService new];
+            _locationService.distanceFilter = 5;
             _locationService.delegate = self;
             [_locationService startUserLocationService];
         } else if (showsUserLocation) {
@@ -188,7 +188,7 @@ const CGFloat RCTBaiduMapZoomBoundBuffer = 0.01;
     if (self.autoZoomToSpan) {
         [self zoomToSpan];
     }
-}
+}   
 
 - (void)setOverlays:(NSArray<RCTBaiduMapOverlay *> *)overlays
 {

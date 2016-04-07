@@ -81,7 +81,7 @@ const BaiduMapView= React.createClass({
         /**
          * 定位图标名称，需要将该图片放到 mapapi.bundle/images 目录下
          */
-        image: React.PropTypes.string
+        image: Image.propTypes.source
 
     }),
 
@@ -339,7 +339,7 @@ const BaiduMapView= React.createClass({
   },
 
   render: function() {
-    let children = [], {annotations, overlays, followUserLocation} = this.props;
+    let children = [], {annotations, overlays, followUserLocation, userLocationViewParams} = this.props;
     annotations = annotations && annotations.map((annotation: Object) => {
       let {
         id,
@@ -482,18 +482,30 @@ const BaiduMapView= React.createClass({
       followUserLocation = this.props.showUserLocation;
     }
 
+    if (!!userLocationViewParams) {
+        let {accuracyCircleFillColor, accuracyCircleStrokeColor, image} = userLocationViewParams;
+        accuracyCircleFillColor = accuracyCircleFillColor && processColor(accuracyCircleFillColor);
+        accuracyCircleStrokeColor = accuracyCircleStrokeColor && processColor(accuracyCircleStrokeColor);
+        userLocationViewParams.accuracyCircleFillColor = accuracyCircleFillColor;
+        userLocationViewParams.accuracyCircleStrokeColor = accuracyCircleStrokeColor;
+
+        image = image && resolveAssetSource(image);
+        userLocationViewParams.image = image;
+    }
+
     return (
       <RCTBaiduMap
-        {...this.props}
-        annotations={annotations}
-        children={children}
-        followUserLocation={followUserLocation}
-        overlays={overlays}
-        onPress={onPress}
-        onChange={onChange}
-        onAnnotationDragStateChange={onAnnotationDragStateChange}
-        onAnnotationFocus={onAnnotationFocus}
-        onAnnotationBlur={onAnnotationBlur}
+          {...this.props}
+          annotations={annotations}
+          children={children}
+          followUserLocation={followUserLocation}
+          overlays={overlays}
+          onPress={onPress}
+          onChange={onChange}
+          onAnnotationDragStateChange={onAnnotationDragStateChange}
+          onAnnotationFocus={onAnnotationFocus}
+          onAnnotationBlur={onAnnotationBlur}
+          userLocationViewParams={userLocationViewParams}
       />
     );
   },

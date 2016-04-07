@@ -62,7 +62,7 @@ public class BaiduMapViewManager extends SimpleViewManager<MapView> {
 
     @ReactProp(name="showsUserLocation", defaultBoolean = false)
     public void showsUserLocation(MapView mapView, Boolean show) {
-        mapView.getMap().setMyLocationEnabled(show);
+        mMapView.setShowsUserLocation(show);
     }
 
     @ReactProp(name="showsCompass", defaultBoolean = false)
@@ -158,5 +158,12 @@ public class BaiduMapViewManager extends SimpleViewManager<MapView> {
                     .build();
             mapView.getMap().animateMapStatus(MapStatusUpdateFactory.newMapStatus(mapStatus));
         }
+    }
+
+    @ReactProp(name = "userLocationViewParams")
+    public void setUserLocationViewParams(MapView mapView, @Nullable ReadableMap params) {
+        ReactMapMyLocationConfiguration configuration = new ReactMapMyLocationConfiguration(this.mContext);
+        configuration.buildConfiguration(params);
+        this.mMapView.setConfiguration(configuration);
     }
 }
