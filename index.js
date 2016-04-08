@@ -338,6 +338,7 @@ const BaiduMapView= React.createClass({
     active: React.PropTypes.bool,
   },
 
+
   render: function() {
     let children = [], {annotations, overlays, followUserLocation, userLocationViewParams} = this.props;
     annotations = annotations && annotations.map((annotation: Object) => {
@@ -496,6 +497,7 @@ const BaiduMapView= React.createClass({
     return (
       <RCTBaiduMap
           {...this.props}
+          ref="baiduMap"
           annotations={annotations}
           children={children}
           followUserLocation={followUserLocation}
@@ -508,6 +510,20 @@ const BaiduMapView= React.createClass({
           userLocationViewParams={userLocationViewParams}
       />
     );
+  },
+
+  zoomToLocs(locs) {
+      if (!Array.isArray(locs) && Object.prototype.toString.call(locs) === '[object Object]') {
+          locs = [locs];
+      }
+      if (!Array.isArray(locs)) {
+          return;
+      }
+      UIManager.dispatchViewManagerCommand(
+          React.findNodeHandle(this.refs["baiduMap"]),
+          UIManager.RCTBaiduMap.Commands.zoomToLocs,
+          [locs]
+      );
   },
 });
 

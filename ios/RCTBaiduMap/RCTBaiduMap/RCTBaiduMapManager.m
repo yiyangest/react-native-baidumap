@@ -9,6 +9,7 @@
 #import "RCTBaiduMapManager.h"
 
 #import "RCTBridge.h"
+#import "RCTUIManager.h"
 #import "RCTConvert+CoreLocation.h"
 #import "RCTConvert+BaiduMapKit.h"
 #import "RCTEventDispatcher.h"
@@ -123,6 +124,42 @@ RCT_CUSTOM_VIEW_PROPERTY(userLocationViewParams, BMKLocationViewDisplayParam, RC
                      }
              };
     
+}
+
+RCT_EXPORT_METHOD(zoomToLocs:(nonnull NSNumber *)reactTag
+                  locations:(NSArray *)locs)
+{
+    [self.bridge.uiManager addUIBlock:
+     ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry){
+         RCTBaiduMap *view = viewRegistry[reactTag];
+         if (!view || ![view isKindOfClass:[RCTBaiduMap class]]) {
+             RCTLogError(@"Cannot find RCTBaiduMap with tag #%@", reactTag);
+             return;
+         }
+         
+         NSMutableArray<CLLocation *> *resultPoints = [NSMutableArray new];
+         if (locs != nil && locs.count > 0) {
+             for (id item in locs) {
+                 if ([item isKindOfClass:[NSArray class]]) {
+                     NSArray *oneLocation = (NSArray *)item;
+                     if (oneLocation.count == 2) {
+                         double latitude = [[oneLocation objectAtIndex:0] doubleValue];
+                         double longitude = [[oneLocation objectAtIndex:1] doubleValue];
+                         [resultPoints addObject:[[CLLocation alloc] initWithLatitude:latitude longitude:longitude]];
+                     }
+                 } else if ([item isKindOfClass:[NSDictionary class]]) {
+                     NSDictionary *oneLocation = (NSDictionary *)item;
+                     if ([oneLocation objectForKey:@"latitude"] && [oneLocation objectForKey:@"longitude"]) {
+                         double latitude = [[oneLocation objectForKey:@"latitude"] doubleValue];
+                         double longitude = [[oneLocation objectForKey:@"longitude"] doubleValue];
+                         [resultPoints addObject:[[CLLocation alloc] initWithLatitude:latitude longitude:longitude]];
+                     }
+                 }
+             }
+         }
+         
+         [view zoomToSpan:resultPoints];
+     }];
 }
 
 #pragma mark - BMKMapViewDelegate

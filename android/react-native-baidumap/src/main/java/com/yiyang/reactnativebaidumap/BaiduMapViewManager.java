@@ -11,20 +11,26 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.model.LatLngBounds;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableType;
+import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yiyang on 16/3/1.
  */
 public class BaiduMapViewManager extends SimpleViewManager<MapView> {
     public static final String RCT_CLASS = "RCTBaiduMap";
+
+    public static final int COMMAND_ZOOM_TO_LOCS = 1;
 
     private ReactMapView mMapView;
 
@@ -165,5 +171,109 @@ public class BaiduMapViewManager extends SimpleViewManager<MapView> {
         ReactMapMyLocationConfiguration configuration = new ReactMapMyLocationConfiguration(this.mContext);
         configuration.buildConfiguration(params);
         this.mMapView.setConfiguration(configuration);
+    }
+
+    @Override
+    public void receiveCommand(MapView root, int commandId, @Nullable ReadableArray args) {
+        switch (commandId) {
+            case COMMAND_ZOOM_TO_LOCS:
+                List<LatLng> positions = new ArrayList<LatLng>();
+                if (args != null && args.size() > 0) {
+                    if (args.getType(0) == ReadableType.Array) {
+                        ReadableArray points = args.getArray(0);
+                        positions = retreiveLocsFromArray(points);
+                    }
+                }
+                this.zoomToLatLngs(root, positions);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @javax.annotation.Nullable
+    @Override
+    public Map<String, Integer> getCommandsMap() {
+        return MapBuilder.of("zoomToLocs", COMMAND_ZOOM_TO_LOCS);
+    }
+
+    private void zoomToCenter(MapView mapView, LatLng center) {
+        mapView.getMap().animateMapStatus(MapStatusUpdateFactory.newLatLngZoom(center, 18));
+    }
+
+    private void zoomToLatLngs(MapView mapView, List<LatLng> array) {
+        if (array == null || array.size() == 0) {
+            this.getMapView().zoomToSpan();
+        } else if (array.size() == 1) {
+            this.zoomToCenter(mapView, array.get(0));
+        } else {
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            for (LatLng item :
+                    array) {
+                builder.include(item);
+            }
+            mapView.getMap().animateMapStatus(MapStatusUpdateFactory.newLatLngBounds(builder.build()));
+        }
+    }
+
+    private static List<LatLng> retreiveLocsFromArray(ReadableArray array) {
+        List<LatLng> results = new ArrayList<LatLng>();
+        if (array != null && array.size() > 0) {
+            int size = array.size();
+            for (int i = 0; i < size; i++) {
+                if (array.getType(i) != ReadableType.Map && array.getType(i) != ReadableType.Array) {
+                    return new ArrayList<LatLng>();
+                }
+                if (array.getType(i) == ReadableType.Array) {
+                    ReadableArray onePointArray = array.getArray(i);
+                    if (onePointArray != null && onePointArray.size() == 2) {
+                        Double latitude = extractDouble(onePointArray, 0);
+                        Double longitude = extractDouble(onePointArray, 1);
+                        if (latitude != null && longitude != null) {
+                            results.add(new LatLng(latitude, longitude));
+                        }
+                    }
+                } else {
+                    ReadableMap onePointMap = array.getMap(i);
+                    if (onePointMap != null && onePointMap.hasKey("latitude") && onePointMap.hasKey("longitude")) {
+                        Double latitude = extractDouble(onePointMap, "latitude");
+                        Double longitude = extractDouble(onePointMap, "longitude");
+                        if (latitude != null && longitude != null) {
+                            results.add(new LatLng(latitude, longitude));
+                        }
+                    }
+                }
+            }
+        }
+
+        return results;
+    }
+
+    private static Double extractDouble(ReadableArray onePointArray, int arrayIndex) {
+        if (arrayIndex >= onePointArray.size() || arrayIndex < 0) {
+            return null;
+        }
+        Double latitude = null;
+        if (onePointArray.getType(arrayIndex) == ReadableType.Number) {
+            latitude = onePointArray.getDouble(arrayIndex);
+        } else if (onePointArray.getType(arrayIndex) == ReadableType.String) {
+            latitude = Double.valueOf(onePointArray.getString(arrayIndex));
+        }
+
+        return latitude;
+    }
+
+    private static Double extractDouble(ReadableMap onePointMap, String mapKey) {
+        if (onePointMap == null || !onePointMap.hasKey(mapKey)) {
+            return null;
+        }
+        Double result = null;
+        if (onePointMap.getType(mapKey) == ReadableType.Number) {
+            result = onePointMap.getDouble(mapKey);
+        } else if (onePointMap.getType(mapKey) == ReadableType.String) {
+            result = Double.valueOf(onePointMap.getString(mapKey));
+        }
+
+        return result;
     }
 }

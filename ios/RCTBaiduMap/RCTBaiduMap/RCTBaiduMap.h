@@ -44,5 +44,6 @@ RCT_EXTERN const CGFloat RCTBaiduMapZoomBoundBuffer;
 
 - (void)zoomToSpan;
 - (void)zoomToSpan:(NSArray<RCTBaiduMapAnnotation *> *)annotations andOverlays:(NSArray<RCTBaiduMapOverlay *> *)overlays;
+- (void)zoomToSpan:(NSArray<CLLocation *> *)locations;
 
 @end

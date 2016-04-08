@@ -293,6 +293,53 @@ const CGFloat RCTBaiduMapZoomBoundBuffer = 0.01;
     [self zoomToSpan:self.annotations andOverlays:self.overlays];
 }
 
+- (void)zoomToSpan:(NSArray<CLLocation *> *)locations
+{
+    if (locations == nil || locations.count == 0) {
+        [self zoomToSpan];
+    } else if (locations.count == 1) {
+        CLLocation *onlyLocation = locations.firstObject;
+        [self zoomToCenter:onlyLocation.coordinate];
+    } else {
+        CLLocationDegrees minLat = 0.0;
+        CLLocationDegrees maxLat = 0.0;
+        CLLocationDegrees minLon = 0.0;
+        CLLocationDegrees maxLon = 0.0;
+        NSInteger index = 0;
+        for (CLLocation *location in locations) {
+            if (index == 0) {
+                minLat = maxLat = location.coordinate.latitude;
+                minLon = maxLon = location.coordinate.longitude;
+            } else {
+                minLat = MIN(minLat, location.coordinate.latitude);
+                minLon = MIN(minLon, location.coordinate.longitude);
+                maxLat = MAX(maxLat, location.coordinate.latitude);
+                maxLon = MAX(maxLon, location.coordinate.longitude);
+            }
+            index ++;
+        }
+        
+        CLLocationCoordinate2D center;
+        center.latitude = (maxLat + minLat) * .5f;
+        center.longitude = (minLon + maxLon) * .5f;
+        BMKCoordinateSpan span = BMKCoordinateSpanMake(maxLat - minLat + 0.02, maxLon - minLon + 0.02);
+        
+        BMKCoordinateRegion region = BMKCoordinateRegionMake(center, span);
+        
+        [self setRegion:region animated:YES];
+
+    }
+}
+
+- (void)zoomToCenter:(CLLocationCoordinate2D)coordinate
+{
+    BMKMapStatus *newMapStatus = [BMKMapStatus new];
+    newMapStatus.targetGeoPt = coordinate;
+    newMapStatus.fLevel = 16;
+    
+    [self setMapStatus:newMapStatus withAnimation:YES];
+}
+
 #pragma mark - BMKLocationServiceDelegate
 
 - (void)didUpdateBMKUserLocation:(BMKUserLocation *)userLocation
