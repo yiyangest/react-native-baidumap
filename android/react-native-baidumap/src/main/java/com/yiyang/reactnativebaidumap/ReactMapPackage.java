@@ -16,7 +16,9 @@ import java.util.List;
 public class ReactMapPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactApplicationContext) {
-        return Collections.emptyList();
+        return Arrays.<NativeModule>asList(
+                new ReactMapLocationModule(reactApplicationContext)
+        );
     }
 
     @Override
