@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A5363BDE1CBBA45000DE069E /* RCTBaiduLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = A5363BDD1CBBA45000DE069E /* RCTBaiduLocation.m */; };
 		A5C251871C8FB9BB00AEED9F /* RCTBaiduMap.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C2517D1C8FB9BB00AEED9F /* RCTBaiduMap.m */; };
 		A5C251881C8FB9BB00AEED9F /* RCTBaiduMapAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C2517F1C8FB9BB00AEED9F /* RCTBaiduMapAnnotation.m */; };
 		A5C251891C8FB9BB00AEED9F /* RCTBaiduMapManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C251811C8FB9BB00AEED9F /* RCTBaiduMapManager.m */; };
@@ -33,6 +34,8 @@
 
 /* Begin PBXFileReference section */
 		A52931AB1C804A8500CC7002 /* libRCTBaiduMap.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRCTBaiduMap.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A5363BDC1CBBA45000DE069E /* RCTBaiduLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTBaiduLocation.h; sourceTree = "<group>"; };
+		A5363BDD1CBBA45000DE069E /* RCTBaiduLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTBaiduLocation.m; sourceTree = "<group>"; };
 		A5C2517C1C8FB9BB00AEED9F /* RCTBaiduMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTBaiduMap.h; sourceTree = "<group>"; };
 		A5C2517D1C8FB9BB00AEED9F /* RCTBaiduMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTBaiduMap.m; sourceTree = "<group>"; };
 		A5C2517E1C8FB9BB00AEED9F /* RCTBaiduMapAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTBaiduMapAnnotation.h; sourceTree = "<group>"; };
@@ -96,6 +99,8 @@
 				A5C251831C8FB9BB00AEED9F /* RCTBaiduMapOverlay.m */,
 				A5C251841C8FB9BB00AEED9F /* RCTConvert+BaiduMapKit.h */,
 				A5C251851C8FB9BB00AEED9F /* RCTConvert+BaiduMapKit.m */,
+				A5363BDC1CBBA45000DE069E /* RCTBaiduLocation.h */,
+				A5363BDD1CBBA45000DE069E /* RCTBaiduLocation.m */,
 			);
 			path = RCTBaiduMap;
 			sourceTree = "<group>";
@@ -167,6 +172,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5363BDE1CBBA45000DE069E /* RCTBaiduLocation.m in Sources */,
 				A5C251891C8FB9BB00AEED9F /* RCTBaiduMapManager.m in Sources */,
 				A5C2518A1C8FB9BB00AEED9F /* RCTBaiduMapOverlay.m in Sources */,
 				A5C251871C8FB9BB00AEED9F /* RCTBaiduMap.m in Sources */,
