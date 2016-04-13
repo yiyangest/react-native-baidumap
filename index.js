@@ -340,7 +340,7 @@ const BaiduMapView= React.createClass({
 
 
   render: function() {
-    let children = [], {annotations, overlays, followUserLocation, userLocationViewParams} = this.props;
+    let children = [], {annotations, overlays, followUserLocation, userLocationViewParams, showsZoomControl} = this.props;
     annotations = annotations && annotations.map((annotation: Object) => {
       let {
         id,
@@ -494,6 +494,10 @@ const BaiduMapView= React.createClass({
         userLocationViewParams.image = image;
     }
 
+    if (showsZoomControl === undefined) {
+        showsZoomControl = false;
+    }
+
     return (
       <RCTBaiduMap
           {...this.props}
@@ -501,6 +505,7 @@ const BaiduMapView= React.createClass({
           annotations={annotations}
           children={children}
           followUserLocation={followUserLocation}
+          showsZoomControl={showsZoomControl}
           overlays={overlays}
           onPress={onPress}
           onChange={onChange}
