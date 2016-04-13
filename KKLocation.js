@@ -11,12 +11,11 @@
  */
 'use strict';
 
-var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
-var KKLocationObserver = require('NativeModules').KKLocationObserver;
+import React from 'react-native';
 
-var invariant = require('invariant');
-var logError = require('logError');
-var warning = require('warning');
+var RCTDeviceEventEmitter = React.DeviceEventEmitter;
+var KKLocationObserver = React.NativeModules.KKLocationObserver;
+
 
 var subscriptions = [];
 
@@ -56,14 +55,10 @@ var KKLocation = {
     geo_error?: Function,
     geo_options?: GeoOptions
   ) {
-    invariant(
-      typeof geo_success === 'function',
-      'Must provide a valid geo_success callback.'
-    );
     KKLocationObserver.getCurrentPosition(
       geo_options || {},
       geo_success,
-      geo_error || logError
+      geo_error || console.error
     );
   },
 
@@ -109,7 +104,7 @@ var KKLocation = {
       }
     }
     if (noWatchers) {
-      Geolocation.stopObserving();
+      KKLocation.stopObserving();
     }
   },
 
@@ -120,7 +115,6 @@ var KKLocation = {
       for (var ii = 0; ii < subscriptions.length; ii++) {
         var sub = subscriptions[ii];
         if (sub) {
-          warning('Called stopObserving with existing subscriptions.');
           sub[0].remove();
           // array element refinements not yet enabled in Flow
           var sub1 = sub[1]; sub1 && sub1.remove();
