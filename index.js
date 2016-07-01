@@ -1,19 +1,20 @@
 'use strict';
 
-import React from 'react-native';
+import React from 'react';
 
-let {
-    EdgeInsetsPropType,
-    Image,
-    NativeMethodsMixin,
-    Platform,
-    requireNativeComponent,
-    StyleSheet,
-    View,
-    UIManager,
-    processColor,
-    ColorPropType,
-} = React;
+import {
+findNodeHandle,
+EdgeInsetsPropType,
+Image,
+NativeMethodsMixin,
+Platform,
+requireNativeComponent,
+StyleSheet,
+View,
+UIManager,
+processColor,
+ColorPropType,
+} from 'react-native'
 
 import deprecatedPropType from 'react-native/Libraries/Utilities/deprecatedPropType';
 import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
@@ -525,7 +526,7 @@ const BaiduMapView= React.createClass({
           return;
       }
       UIManager.dispatchViewManagerCommand(
-          React.findNodeHandle(this.refs["baiduMap"]),
+          findNodeHandle(this.refs["baiduMap"]),
           UIManager.RCTBaiduMap.Commands.zoomToLocs,
           [locs]
       );
