@@ -11,7 +11,7 @@
  */
 'use strict';
 
-import React from 'react-native';
+import React from 'react';
 
 var RCTDeviceEventEmitter = React.DeviceEventEmitter;
 var KKLocationObserver = React.NativeModules.KKLocationObserver;
